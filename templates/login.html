@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+ 
+
+{% block container %}
+<div class="container">
+      <form class="form-signin" action='login' method='POST'>
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <label for="email" class="sr-only">Email address</label>
+        <input type='text' name='email' id='email' placeholder='email' required autofocus>
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type='password' name='password' id='inputPassword' required>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" value="remember-me"> Remember me
+          </label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" name='submit' type="submit">Sign in</button>
+          <p style="color: red">{{error_Message}}</p>
+      </form>
+
+    </div> <!-- /container -->
+
+{% endblock %}

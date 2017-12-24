@@ -1,0 +1,155 @@
+{% extends 'dashboard_base.html' %}
+ 
+
+{% block container %}
+    <h1>Welcome <strong>{{current_user}}</strong> to Jan's personal Greenhouse Dashboard!</h1>
+    <div id="current_container">
+        <h2>Current Weather</h2>
+        <div id="current_weather">
+            <div>
+                <h3>Temperature</h3>
+                <h3 id="temp_var">Temp</h3>
+            </div>
+            <div>
+                <h3>Humidity</h3>
+                <h3 id="hum_var"></h3>
+            </div>
+            <div>
+                <img id="weather_icon" src="">
+                <p id="weather_desc"></p>
+            </div>
+        </div>
+    </div>
+    <div id="hum_temp_green">
+        <div>
+            <h2>Humidity</h2>
+            <div>
+                <h3>Current Humidity in Greenhouse</h3>
+                <h3>67 % </h3>
+            </div>
+            <div>
+                <div id="curve_hum" style="width: 600px; height: 250px"></div>
+            </div>
+        </div>
+        <div>
+            <h2>Temperature</h2>
+            <div>
+                <h3>Current Temperature in Greenhouse</h3>
+                <h3>23 °C</h3>
+            </div>
+            <div>
+                <div id="curve_temp" style="width: 600px; height: 250px"></div>
+            </div>
+        </div>
+    </div>
+    <div id="moisture_container">
+        <h2>Moisture</h2>
+        <div id="moisture_alerts">
+            <div>
+                <h3>Sensor 1</h3>
+                <h3>Water</h3>
+            </div>
+            <div>
+                <h3>Sensor 2</h3>
+                <h3>Fine</h3>
+            </div>
+            <div>
+                <h3>Sensor 3</h3>
+                <h3>Fine</h3>
+            </div>
+            <div>
+                <h3>Sensor 4</h3>
+                <h3>Water</h3>
+            </div>
+        </div>
+    </div>
+    <style>
+    #hum_temp_green{
+        display: grid;
+        grid-template-columns: 50% 50%;
+        margin-top: 50px;
+    }
+    #current_container{
+        margin-top: 50px;
+    }
+    #current_weather{
+        display: grid;
+        grid-template-columns: 33% 33% 33%;
+    }
+    #moisture_container{
+        margin-top: 50px;
+    }
+    #moisture_alerts{
+        display: grid;
+        grid-template-columns: 25% 25% 25% 25%;
+    }
+    </style>
+    <script>
+        //Latitude: 55.628662 | Longitude: 12.625866
+        window.onload = function(){
+            $.get('http://api.openweathermap.org/data/2.5/weather?lat=55.628662&lon=12.625866&appid=1c9695ea4f0c980aed078c50a2c7a65c', function ( data ) {
+                var main_Weather = data.weather[0].main;
+                var description_Weather = data.weather[0].description;
+                var humidity = data.main.humidity;
+                var temperature = data.main.temp - 273.15;
+                $('#temp_var').text(temperature+" °C");
+                $('#hum_var').text(humidity+" %");
+                $('#weather_desc').text(description_Weather);
+                $('#weather_icon').attr('src', "http://openweathermap.org/img/w/"+data.weather[0].icon+".png");
+                //console.log("http://openweathermap.org/img/w/"+data.weather[0].icon+".png")
+                //http://openweathermap.org/img/w/10d.png
+
+        });
+        }
+
+    </script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Time', 'Temperature'],
+          ['2004',  24],
+          ['2005',  26],
+          ['2006',  23],
+          ['2007',  25]
+        ]);
+
+        var options = {
+          title: 'Temperature in Greenhouse',
+          curveType: 'function',
+          legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_temp'));
+
+        chart.draw(data, options);
+      }
+    </script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Time', 'Humidity'],
+          ['2004',  80],
+          ['2005',  76],
+          ['2006',  67],
+          ['2007',  87]
+        ]);
+
+        var options = {
+          title: 'Humidity in Greenhouse',
+          curveType: 'function',
+          legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_hum'));
+
+        chart.draw(data, options);
+      }
+    </script>
+{% endblock %}
